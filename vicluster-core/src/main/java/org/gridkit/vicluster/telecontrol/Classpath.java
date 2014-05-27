@@ -196,6 +196,13 @@ public class Classpath {
                 jdkLib = jdkLib.substring(0, jdkLib.lastIndexOf("jre")).concat("lib");
                 return new File(jdkLib).toURI().toURL();
             }
+            if (System.getProperty("os.name").startsWith("Mac OS") && //hack for preinstalled 1.6 jre on Mac OS
+                    jdkLib.startsWith(File.separator + "System") &&
+                    System.getProperty("java.version").startsWith("1.6.0") &&
+                    jdkLib.endsWith("Home")) {
+                jdkLib = jdkLib.substring(0, jdkLib.lastIndexOf("Home")).concat("Classes");
+                return new File(jdkLib).toURI().toURL();
+            }
         } catch (MalformedURLException e) {
             e.printStackTrace();
             return null;
