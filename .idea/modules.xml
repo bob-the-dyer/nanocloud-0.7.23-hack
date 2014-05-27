@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project version="4">
+  <component name="ProjectModuleManager">
+    <modules>
+      <module fileurl="file://$PROJECT_DIR$/telecontrol/telecontrol.iml" filepath="$PROJECT_DIR$/telecontrol/telecontrol.iml" />
+      <module fileurl="file://$PROJECT_DIR$/telecontrol-ssh/telecontrol-ssh.iml" filepath="$PROJECT_DIR$/telecontrol-ssh/telecontrol-ssh.iml" />
+      <module fileurl="file://$PROJECT_DIR$/vicluster-core/vicluster-core.iml" filepath="$PROJECT_DIR$/vicluster-core/vicluster-core.iml" />
+      <module fileurl="file://$PROJECT_DIR$/vicluster-parent.iml" filepath="$PROJECT_DIR$/vicluster-parent.iml" />
+      <module fileurl="file://$PROJECT_DIR$/viconcurrent/viconcurrent.iml" filepath="$PROJECT_DIR$/viconcurrent/viconcurrent.iml" />
+      <module fileurl="file://$PROJECT_DIR$/zerormi/zerormi.iml" filepath="$PROJECT_DIR$/zerormi/zerormi.iml" />
+    </modules>
+  </component>
+</project>
+

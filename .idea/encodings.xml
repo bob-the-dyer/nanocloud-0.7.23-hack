@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project version="4">
+  <component name="Encoding" useUTFGuessing="true" native2AsciiForPropertiesFiles="false">
+    <file url="file://$PROJECT_DIR$" charset="UTF-8" />
+    <file url="file://$PROJECT_DIR$/telecontrol" charset="UTF-8" />
+    <file url="file://$PROJECT_DIR$/telecontrol-ssh" charset="UTF-8" />
+    <file url="file://$PROJECT_DIR$/vicluster-core" charset="UTF-8" />
+    <file url="file://$PROJECT_DIR$/viconcurrent" charset="UTF-8" />
+    <file url="file://$PROJECT_DIR$/zerormi" charset="UTF-8" />
+  </component>
+</project>
+
