@@ -15,44 +15,45 @@
  */
 package org.gridkit.vicluster.telecontrol;
 
-import java.io.ByteArrayInputStream;
-import java.io.File;
-import java.io.FileInputStream;
-import java.io.FileNotFoundException;
-import java.io.IOException;
-import java.io.InputStream;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
+import java.io.*;
 import java.lang.ref.WeakReference;
-import java.net.MalformedURLException;
-import java.net.URI;
-import java.net.URISyntaxException;
-import java.net.URL;
-import java.net.URLClassLoader;
+import java.net.*;
 import java.util.*;
 import java.util.jar.JarEntry;
 import java.util.jar.JarFile;
-
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 public class Classpath {
 
 	private static final Logger LOGGER = LoggerFactory.getLogger(Classpath.class);
 	private static final String DIGEST_ALGO = "SHA-1";
-	
+
 	private static WeakHashMap<ClassLoader, List<ClasspathEntry>> CLASSPATH_CACHE = new WeakHashMap<ClassLoader, List<ClasspathEntry>>();
 	private static WeakHashMap<URL, WeakReference<ClasspathEntry>> CUSTOM_ENTRIES = new WeakHashMap<URL, WeakReference<ClasspathEntry>>();
-	
+
 	public static synchronized List<ClasspathEntry> getClasspath(ClassLoader classloader) {
 		List<ClasspathEntry> classpath = CLASSPATH_CACHE.get(classloader);
 		if (classpath == null) {
 			classpath = new ArrayList<Classpath.ClasspathEntry>();
-			fillClasspath(classpath, ClasspathUtils.listCurrentClasspath(((URLClassLoader)classloader)));
+            if (classloader instanceof URLClassLoader) {
+                fillClasspath(classpath, ClasspathUtils.listCurrentClasspath(((URLClassLoader) classloader)));
+            } else { //workaround for com.intellij.util.lang.UrlClassLoader which extends java.lang.ClassLoader, bob-the-dyer hack
+                try {
+                    List<URL> urls = (List<URL>) classloader.getClass().getMethod("getUrls").invoke(classloader);
+                    URLClassLoader classLoaderAdapter = new URLClassLoader(urls.toArray(new URL[0]), classloader.getParent());
+                    fillClasspath(classpath, ClasspathUtils.listCurrentClasspath((classLoaderAdapter)));
+                } catch (Exception e) {
+                    LOGGER.error("ClassLoader of type " + classloader.getClass().getName() + " doesn't have method getUrls()", e.getMessage());
+                }
+            }
 			classpath = Collections.unmodifiableList(classpath);
 			CLASSPATH_CACHE.put(classloader, classpath);
 		}
 		return classpath;
 	}
-	
+
 	public static synchronized ClasspathEntry getLocalEntry(String path) throws IOException {
 		try {
 			URL url = new File(path).toURI().toURL();
@@ -172,7 +173,7 @@ public class Classpath {
                         return new URL(root);
                     }
                 }
-                /*Mac OS jre 1.6*/
+                /*bob-the-dyer hack, Mac OS jre 1.6*/
                 if (root.endsWith("/classes.jar")) {
                     root = root.substring(0, root.lastIndexOf('/'));
                     if (root.endsWith("/Classes")) {
@@ -196,7 +197,7 @@ public class Classpath {
                 jdkLib = jdkLib.substring(0, jdkLib.lastIndexOf("jre")).concat("lib");
                 return new File(jdkLib).toURI().toURL();
             }
-            if (System.getProperty("os.name").startsWith("Mac OS") && //hack for preinstalled 1.6 jre on Mac OS
+            if (System.getProperty("os.name").toLowerCase().startsWith("mac os") && //for preinstalled 1.6 jre on Mac OS, bob-the-dyer hack
                     jdkLib.startsWith(File.separator + "System") &&
                     System.getProperty("java.version").startsWith("1.6.0") &&
                     jdkLib.endsWith("Home")) {
@@ -236,7 +237,7 @@ public class Classpath {
 		}
 		return entry;
 	}
-	
+
 	private static File uriToFile(URI uri) {
 		if ("file".equals(uri.getScheme())) {
 			if (uri.getAuthority() == null) {
@@ -256,17 +257,17 @@ public class Classpath {
 	}
 
 	public static class ClasspathEntry implements FileBlob {
-		
+
 		private URL url;
 		private String filename;
 		private String hash;
 		private File file;
 		private byte[] data;
-		
+
 		public URL getUrl() {
 			return url;
 		}
-		
+
 		@Override
 		public String getFileName() {
 			return filename;
@@ -276,7 +277,7 @@ public class Classpath {
 		public synchronized String getContentHash() {
 			if (hash == null) {
 				hash = StreamHelper.digest(getData(), DIGEST_ALGO);
-			}			
+			}
 			return hash;
 		}
 
@@ -302,6 +303,6 @@ public class Classpath {
 				// do not cache jar content in memory
 				return StreamHelper.readFile(file);
 			}
-		}		
-	}	
+		}
+	}
 }

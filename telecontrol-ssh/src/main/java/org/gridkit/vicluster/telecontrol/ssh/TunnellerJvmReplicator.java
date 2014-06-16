@@ -135,7 +135,7 @@ public class TunnellerJvmReplicator implements RemoteJmvReplicator {
 	}
 
 	private void initRemoteClasspath() throws IOException {
-		List<Classpath.ClasspathEntry> classpath = Classpath.getClasspath(Thread.currentThread().getContextClassLoader());
+		List<Classpath.ClasspathEntry> classpath = Classpath.getClasspath(getClass().getClassLoader()); //bob-the-dyer hack
 
 		// random upload order improve performance if cache is on shared mount
 		List<Classpath.ClasspathEntry> uploadJars = new ArrayList<Classpath.ClasspathEntry>(classpath);
@@ -165,7 +165,7 @@ public class TunnellerJvmReplicator implements RemoteJmvReplicator {
 
 	private String createBootJar(String name, JvmConfig config) throws IOException {
 		
-		List<Classpath.ClasspathEntry> classpath = Classpath.getClasspath(Thread.currentThread().getContextClassLoader());
+		List<Classpath.ClasspathEntry> classpath = Classpath.getClasspath(getClass().getClassLoader()); //bob-the-dyer hack
 		classpath = config.filterClasspath(classpath);
 
 		// random upload order improve performance if cache is on shared mount
