@@ -282,15 +282,19 @@ public class ViGroup implements ViNode {
 
 		@Override
 		public boolean isCancelled() {
-			// TODO implement isCancelled
-			throw new UnsupportedOperationException();
+            for (Future f : futures) {   // bob-the-dyer hack
+                if (f.isCancelled()) return true;
+            }
+            return false;
 		}
 
 		@Override
 		public boolean isDone() {
-			// TODO implement isDone
-			throw new UnsupportedOperationException();
-		}
+            for (Future f : futures) { // bob-the-dyer hack
+                if (!f.isDone()) return false;
+            }
+            return true;
+        }
 
 		@Override
 		@SuppressWarnings({ "unchecked", "rawtypes" })
