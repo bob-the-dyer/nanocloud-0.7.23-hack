@@ -182,7 +182,7 @@ public class ConfigurableSshReplicator implements ViNodeProvider {
 				s.keyFile = "~/.ssh/id_dsa|~/.ssh/id_rsa";
 			}
 			else {
-				throw new IllegalArgumentException("No creadetials found for node '" + name + "'");
+				throw new IllegalArgumentException("No credentials found for node '" + name + "'");
 			}
 		}
 
