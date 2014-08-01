@@ -103,6 +103,8 @@ public class Classpath {
                     else if (f.getName().startsWith("surefire") && isManifestOnly(f)) {
                         // surefirebooter will interfere with classpath tweaking, exclude it
                         return true;
+                    } else if (f.getName().startsWith("drozd-idea-plugin")) { // bob-the-dyer hack
+                        return true;
                     }
                 }
             }
