@@ -62,7 +62,7 @@ import org.slf4j.LoggerFactory;
 
 public class TunnellerJvmReplicator implements RemoteJmvReplicator {
 
-	private static final long DEFAULT_CONN_TIMEOUT = 5000;
+	private static final long DEFAULT_CONN_TIMEOUT = 60000;  // bob-the-dyer hack
 	
 	private SshRemotingConfig rconfig = new SshRemotingConfig();
 	private boolean initialized;
